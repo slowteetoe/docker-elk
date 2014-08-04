@@ -1,6 +1,9 @@
-Docker - ElasticSearch (1.1.1) / Logstash (1.4.2) / Kibana (3.1.0)
+Docker - ELK stack
 ---
-Current ELK stack running in Docker using supervisord to control the processes
+Current ELK stack running in Docker using supervisord to control the processes.
+* ElasticSearch (1.3.1)
+* Logstash (1.4.2)
+* Kibana (3.1.0)
 
 This is going to set up:
 
