@@ -1,4 +1,4 @@
-# ELK stack starting from base-image (https://github.com/phusion/baseimage-docker)
+#ELK stack starting from base-image (https://github.com/phusion/baseimage-docker)
 FROM phusion/baseimage:0.9.12
 MAINTAINER Steven Lotito "steven.lotito@alumni.pitt.edu
 

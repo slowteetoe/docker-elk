@@ -13,9 +13,11 @@ This is going to set up:
 * nginx
 * kibana
 
+You'll probably want to mount a data volume or host volume to /var/lib/elasticsearch (for its data)
+
 Running
 ---
-docker run -d -p 2222:22 -p 88:88 -p 9200:9200 -p 9300:9300 -p 5228:5228/udp slowteetoe/docker-elk
+docker run -d -p 2222:22 -p 88:88 -p 9200:9200 -p 9300:9300 -p 5228:5228/udp -v /data:/var/lib/elasticsearch -name elk slowteetoe/docker-elk
 
 TODO
 ---
