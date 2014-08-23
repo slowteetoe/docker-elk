@@ -1,0 +1,55 @@
+#################################################################
+# This docker image build file creates an image that contains
+# java 7 and elasticsearch. It is intended for you
+# to use as a base for your project. Or as a template for your dockerfile.
+#
+#                    ##        .
+#              ## ## ##       ==
+#           ## ## ## ##      ===
+#       /""""""""""""""""\___/ ===
+#  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~
+#       \______ o   SLOTITO__/
+#         \    \        __/
+#          \____\______/
+#
+# Component:    Elasticsearch
+#################################################################
+
+FROM java:7
+MAINTAINER Steven Lotito "steven.lotito@alumni.pitt.edu
+
+
+# fix sources
+RUN sed 's/main$/main universe/' -i /etc/apt/sources.list
+RUN sed 's/trusty universe/trusty universe multiverse/' -i /etc/apt/sources.list
+RUN sed 's/trusty-updates universe/trusty universe multiverse/' -i /etc/apt/sources.list
+
+# add keys for elasticsearch repos
+RUN wget -qO - http://packages.elasticsearch.org/GPG-KEY-elasticsearch | apt-key add -
+# add repos from elasticsearch
+ADD etc/apt/sources.list.d/elasticsearch.list /etc/apt/sources.list.d/
+
+# Installs
+RUN apt-get update
+RUN apt-get install -y libreadline6 libreadline6-dev
+RUN apt-get install -y  supervisor openssh-server
+
+RUN mkdir -p /var/log/supervisor
+ADD etc/supervisor/conf.d/supervisord.conf /etc/supervisor/conf.d/
+
+# install elasticsearch
+RUN apt-get install -y elasticsearch
+RUN sed -i '/# cluster.name:.*/a cluster.name: elk' /etc/elasticsearch/elasticsearch.yml
+ADD etc/supervisor/conf.d/elasticsearch.conf /etc/supervisor/conf.d/
+
+# clean stuff
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# let us SSH into the box
+RUN mkdir -p /var/run/sshd
+RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key
+RUN echo 'root:elkpass' |chpasswd   # you'll probably want to change this asap!
+
+EXPOSE 22 88 9200 9300 5228/udp
+
+CMD ["/usr/bin/supervisord"]
